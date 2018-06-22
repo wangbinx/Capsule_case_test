@@ -1,0 +1,88 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 2 (0x2)
+    Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C=AU, ST=Some-State, O=Internet Widgits Pty Ltd, CN=testsub
+        Validity
+            Not Before: Jun 20 03:00:36 2018 GMT
+            Not After : Jun 17 03:00:36 2028 GMT
+        Subject: C=AU, ST=Some-State, O=Internet Widgits Pty Ltd, CN=testcert
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:be:28:e0:fd:2f:b0:9c:3c:c1:e7:f3:bc:a3:7b:
+                    70:90:12:42:c3:da:1f:db:b4:5b:9e:90:86:b3:42:
+                    28:16:45:18:e3:07:2a:df:3b:f8:78:56:e8:b8:92:
+                    e3:dc:0d:b8:37:7e:10:1f:96:72:bd:8b:6a:09:37:
+                    08:60:e1:9a:72:da:0e:02:9c:eb:84:41:1d:69:55:
+                    00:2e:65:b5:af:5d:eb:b4:f6:34:a5:64:1b:7a:97:
+                    0a:5f:d6:b3:14:d7:f6:e8:02:27:ba:7f:f5:ab:14:
+                    bb:fb:b5:89:0b:e8:ce:1f:48:cc:2b:4c:62:e6:22:
+                    80:1d:47:95:0f:fb:ea:d6:9b:19:f6:9d:a6:8a:f0:
+                    6b:5c:c5:ff:1e:86:c4:c6:fb:05:d7:08:2a:a5:60:
+                    a2:d4:bd:1c:29:64:c9:cd:09:73:8b:09:fe:5b:12:
+                    65:25:2e:2c:83:b3:48:89:66:4b:cf:51:74:83:b9:
+                    53:8e:64:64:a2:40:9e:29:d0:fc:00:7a:b8:91:b9:
+                    8f:c0:3e:ac:1f:18:40:9b:0d:7f:51:64:bb:1f:9a:
+                    1d:d0:54:7f:6d:7e:63:83:b9:c9:02:f7:3c:01:90:
+                    77:7f:8b:14:85:77:55:a3:c5:fd:c5:66:5c:4c:8f:
+                    71:aa:fc:6b:a3:7a:c0:e1:f2:09:41:c4:86:3e:79:
+                    d7:61
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            Netscape Cert Type: 
+                SSL Client, S/MIME
+            X509v3 Key Usage: critical
+                Digital Signature, Non Repudiation, Key Encipherment
+            Netscape Comment: 
+                OpenSSL Generated Certificate
+            X509v3 Subject Key Identifier: 
+                B6:0E:59:EF:8A:E9:22:CB:B0:B4:BD:3C:E7:C0:15:7E:83:37:3E:AB
+            X509v3 Authority Key Identifier: 
+                keyid:79:05:2D:F0:B6:15:B8:1D:E5:73:82:AA:DF:D6:8C:75:B9:9A:5D:30
+
+            X509v3 Extended Key Usage: critical
+                Time Stamping
+    Signature Algorithm: sha256WithRSAEncryption
+         8d:a9:65:49:06:a8:dd:48:7d:2f:c5:c5:02:bd:2c:93:11:2f:
+         16:2b:b4:c6:10:93:06:c8:6a:19:68:50:df:b6:d6:28:cd:83:
+         e3:f7:40:c4:bb:64:fa:06:fd:07:1b:53:92:6c:4e:6a:88:22:
+         fe:e4:70:4c:66:92:5f:80:2c:53:19:51:d3:b4:d1:26:6a:8c:
+         e8:ee:ad:de:32:88:f8:eb:db:e8:1a:02:e8:1b:ce:ec:9e:06:
+         fc:0e:a9:ce:9e:b1:93:b0:a5:95:22:92:f1:a9:cf:cd:2d:7d:
+         eb:96:97:5f:21:cb:dd:95:99:9a:c3:9a:72:61:c3:19:3e:32:
+         d9:c3:c7:58:27:35:04:57:a2:c8:d7:8f:1e:f1:37:91:23:10:
+         6f:c2:c9:23:e7:f0:3f:48:f7:d8:65:cd:43:a2:2e:bb:9c:c8:
+         48:8a:87:60:0e:2d:7c:7d:4d:96:cc:4b:63:a8:98:35:30:13:
+         cc:99:b4:e8:db:2a:7a:99:36:98:37:30:e4:86:6c:4e:fe:3d:
+         13:8a:ba:07:fe:b7:f5:ce:34:83:95:9c:e2:1a:13:75:57:74:
+         c3:03:11:ab:d8:d6:3c:84:30:e4:61:31:7c:a4:74:b9:47:fc:
+         69:1a:ca:c4:cb:90:22:d1:71:fb:58:88:bf:58:42:f4:4d:4a:
+         f1:06:f3:54
+-----BEGIN CERTIFICATE-----
+MIID4jCCAsqgAwIBAgIBAjANBgkqhkiG9w0BAQsFADBXMQswCQYDVQQGEwJBVTET
+MBEGA1UECAwKU29tZS1TdGF0ZTEhMB8GA1UECgwYSW50ZXJuZXQgV2lkZ2l0cyBQ
+dHkgTHRkMRAwDgYDVQQDDAd0ZXN0c3ViMB4XDTE4MDYyMDAzMDAzNloXDTI4MDYx
+NzAzMDAzNlowWDELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAf
+BgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDERMA8GA1UEAwwIdGVzdGNl
+cnQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC+KOD9L7CcPMHn87yj
+e3CQEkLD2h/btFuekIazQigWRRjjByrfO/h4Vui4kuPcDbg3fhAflnK9i2oJNwhg
+4Zpy2g4CnOuEQR1pVQAuZbWvXeu09jSlZBt6lwpf1rMU1/boAie6f/WrFLv7tYkL
+6M4fSMwrTGLmIoAdR5UP++rWmxn2naaK8Gtcxf8ehsTG+wXXCCqlYKLUvRwpZMnN
+CXOLCf5bEmUlLiyDs0iJZkvPUXSDuVOOZGSiQJ4p0PwAeriRuY/APqwfGECbDX9R
+ZLsfmh3QVH9tfmODuckC9zwBkHd/ixSFd1Wjxf3FZlxMj3Gq/GujesDh8glBxIY+
+eddhAgMBAAGjgbcwgbQwCQYDVR0TBAIwADARBglghkgBhvhCAQEEBAMCBaAwDgYD
+VR0PAQH/BAQDAgXgMCwGCWCGSAGG+EIBDQQfFh1PcGVuU1NMIEdlbmVyYXRlZCBD
+ZXJ0aWZpY2F0ZTAdBgNVHQ4EFgQUtg5Z74rpIsuwtL0858AVfoM3PqswHwYDVR0j
+BBgwFoAUeQUt8LYVuB3lc4Kq39aMdbmaXTAwFgYDVR0lAQH/BAwwCgYIKwYBBQUH
+AwgwDQYJKoZIhvcNAQELBQADggEBAI2pZUkGqN1IfS/FxQK9LJMRLxYrtMYQkwbI
+ahloUN+21ijNg+P3QMS7ZPoG/QcbU5JsTmqIIv7kcExmkl+ALFMZUdO00SZqjOju
+rd4yiPjr2+gaAugbzuyeBvwOqc6esZOwpZUikvGpz80tfeuWl18hy92VmZrDmnJh
+wxk+MtnDx1gnNQRXosjXjx7xN5EjEG/CySPn8D9I99hlzUOiLrucyEiKh2AOLXx9
+TZbMS2OomDUwE8yZtOjbKnqZNpg3MOSGbE7+PROKugf+t/XONIOVnOIaE3VXdMMD
+EavY1jyEMORhMXykdLlH/GkaysTLkCLRcftYiL9YQvRNSvEG81Q=
+-----END CERTIFICATE-----
