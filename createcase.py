@@ -24,11 +24,13 @@ class config(object):
 #	def configure(self):
 		parse=ConfigParser.ConfigParser()
 		parse.read(self.config_file)
-		self.basetool_path = parse.get('PATH','BaseTools_path').strip('"')
 		self.generatecapsule_path = parse.get('PATH','GenerateCapsule_path').strip('"')
+		self.script_name =parse.get('PATH','Script_name').strip('"')
 		self.cert_file_path = parse.get('PATH','Cert_file_path').strip('"')
 		self.signing_tool_path = parse.get('PATH','Signing_tool_path').strip('"')
 		self.mould_file_path = parse.get('PATH','Mould_file_path').strip('"')
+		self.script_path = os.path.join(self.generatecapsule_path,self.script_name)
+		self.python_path = parse.get('PATH','PYTHON_PATH').strip('"')
 
 	def test(self):
 		pass
@@ -42,6 +44,7 @@ class create_case(config):
 		self.excel_file = os.path.join(root,'GenerateCapsule.xlsx')
 		self.case_sheet = "GenerateCapsule"
 		self.excel_info = self.read_excel()
+		self.caseinfo = self.case_info()
 
 	def read_excel(self):
 		info={}
@@ -64,40 +67,76 @@ class create_case(config):
 					if sheet.cell_value(rowx,colx):
 						value = sheet.cell_value(rowx,colx)
 					info[(rowx,colx)]=value.encode('utf-8')
-	#	for i in info.keys():
-	#		print i,info[i]
 		return info
 
 	def case_info(self):
-		case = []
+		case = {}
 		title ={}
 		for i in self.excel_info.keys():
 			if i[0] == 0:
 				title[self.excel_info[i]] = i[1]
 		for i in self.excel_info.keys():
 			tmp={}
-	#		tmp['case_location'] = (i[0],title['ID'])
+			tmp['case_location'] = (i[0],title['ID'])
 			tmp['case_calssify'] = self.excel_info[i[0], 0] + '_' + self.excel_info[i[0], 1]
 			if self.excel_info[i[0],2] == self.excel_info[i[0],3]:
 				tmp['case_name'] = self.excel_info[i[0],0]+'_'+self.excel_info[i[0],1]+'_'+self.excel_info[i[0],2]
 			else:
 				tmp['case_name'] = self.excel_info[i[0], 0] + '_' + self.excel_info[i[0], 1] + '_' + self.excel_info[i[0], 2]+'_'+self.excel_info[i[0],3]
-			tmp['case_command'] = self.excel_info[i[0],title['command']]
-			tmp['case_number'] = self.excel_info[i[0], title['ID']]
+			tmp['case_command'] = self.excel_info[i[0],title['Command']]
+			tmp['case_id'] = self.excel_info[i[0], title['ID']]
 			tmp['case_result'] = self.excel_info[i[0], title['Result']]
-			tmp['expected result'] = self.excel_info[i[0], title['expected result']]
-			case.append(tmp)
-		for j in case:
-			print j
+			tmp['expected_result'] = self.excel_info[i[0], title['Expected result']]
+			case[(i[0],title['ID'])]=tmp
+		for key in case.keys():
+			if case[key]['case_id'] in ['','ID']:
+				del case[key]
+	#	for i in case.keys():
+	#		print case[i]
 		return case
 
-	def run_case(self,case_dict):
-		subprocess.check_call('GenerateCapsule.py')
+	def all_case(self):
+		for key in self.caseinfo.keys():
+			case = self.caseinfo[key]
+			self.run_case(case)
 
+	def run_case(self,case_dict):
+		msg = re.compile(r'%s'%case_dict['expected_result'])
+		try:
+			if case_dict['expected_result'] not in ['','N/A']:
+				result = subprocess.Popen('python %s %s' % (self.script_path, case_dict['case_command']),
+				                          stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+				out = result.stdout.read()
+				err = result.stderr.read()
+				if os.path.isfile(os.path.join(self.mould_file_path,case_dict['expected_result'])):
+					if out ==  self.read_module(os.path.join(self.mould_file_path,case_dict['expected_result'])):
+						case_dict['case_result'] = 'PASS'
+						print case_dict['case_id']
+					else:
+						case_dict['case_result'] = 'Fail'
+				else:
+					if err:
+						if msg.search(err):
+							case_dict['case_result'] = 'PASS'
+							print case_dict['case_id']
+						else:
+							print "%s fail message not match expected_result"%case_dict['case_id']
+							case_dict['case_result'] = 'Fail'
+			else:
+				print "%s not have expected result"%(case_dict['case_id'])
+			return case_dict
+		except Exception,e:
+			print e
+
+	def read_module(self,file):
+		with open(file,'r') as mf:
+			read= mf.read()
+		return read
 
 
 def main():
 	case = create_case()
+	os.environ['PYTHONPATH'] = case.python_path
 	print 'Please select case to run:\n'
 	print '1. Run all test case\n'
 	print '2. Run test case by case %s\n'%case.excel_info[(0,0)]
@@ -106,6 +145,7 @@ def main():
 	input = int(raw_input())
 	if input == 1:
 		print "Run all"
+		case.all_case()
 	elif input == 2:
 		print "Category"
 	elif input == 3:
@@ -117,13 +157,10 @@ def main():
 
 
 if __name__ == "__main__":
-	#main()
+	main()
 	case = create_case()
 	case.case_info()
-	co = config()
-	print case.config_file
-	print case.basetool_path
-	print co.generatecapsule_path
-	print co.cert_file_path
-	print co.signing_tool_path
-	print co.mould_file_path
+	os.environ['PYTHONPATH'] = case.python_path
+	dict= {'case_result': '', 'case_calssify': 'Basic_Function', 'case_location': (4, 6), 'case_name': 'Basic_Function_\
+	#  -o   _GenerateCapsule.py -o', 'case_id': 'TC-4', 'expected_result': 'GenerateCapsule: error: argument -o/--output: expected one argument', 'case_command': ' -o'}
+	#case.run_case(dict)
