@@ -9,6 +9,8 @@ import shutil
 import subprocess
 import ConfigParser
 from optparse import OptionParser
+import openpyxl
+import openpyxl.styles as styles
 
 class config(object):
 
@@ -31,25 +33,50 @@ class config(object):
 		self.mould_file_path = parse.get('PATH','Mould_file_path').strip('"')
 		self.script_path = os.path.join(self.generatecapsule_path,self.script_name)
 		self.python_path = parse.get('PATH','PYTHON_PATH').strip('"')
+		self.report_file = parse.get('PATH','Report_file').strip('"')
 
 	def test(self):
 		pass
-
 
 class create_case(config):
 
 	def __init__(self):
 		super(create_case,self).__init__()
-		root = os.getcwd()
-		self.excel_file = os.path.join(root,'GenerateCapsule.xlsx')
 		self.case_sheet = "GenerateCapsule"
 		self.excel_info = self.read_excel()
 		self.caseinfo = self.case_info()
+		self.flag_dict ={
+			'PersistAcrossReset' : {'CAPSULE_FLAGS_PERSIST_ACROSS_RESET':0x00010000},
+			'PopulateSystemTable': {'CAPSULE_FLAGS_POPULATE_SYSTEM_TABLE':0x00020000},
+			'InitiateReset'      : {'CAPSULE_FLAGS_INITIATE_RESET':0x00040000},
+		}
+		self.command_dict ={
+			'-h'                         : '',
+			'-o'                         : '',
+			'-e'                         : '',
+			'-d'                         : '',
+			'--dump-info'                : '',
+			'--capflag'                  : 'EFI_CAPSULE_HEADER.Flags',
+			'--capoemflag'               : 'OEM Flags',
+			'--guid'                     : 'EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER.UpdateImageTypeId',
+			'--hardware-instance'        : 'EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER.UpdateHardwareInstance',
+			'--monotonic-count'          : 'EFI_FIRMWARE_IMAGE_AUTHENTICATION.MonotonicCount',
+			'--version'                  : 'FMP_PAYLOAD_HEADER.FwVersion',
+			'--lsv'                      : 'FMP_PAYLOAD_HEADER.LowestSupportedVersion',
+			'--pfx-file'                 : '',
+			'--signer-private-cert'      : '',
+			'--other-public-cert'        : '',
+			'--trusted-public-cert'      : '',
+			'--signing-tool-path'        : '',
+			'-v'                         : '',
+			'-q'                         : '',
+			'--debug'                    : ''
+		}
 
 	def read_excel(self):
 		info={}
 		try:
-			excel = xlrd.open_workbook(self.excel_file)
+			excel = xlrd.open_workbook(self.report_file)
 			sheet = excel.sheet_by_name(self.case_sheet)
 		except Exception,e:
 			print "Open Excel file error:%s" %e
@@ -133,6 +160,13 @@ class create_case(config):
 			read= mf.read()
 		return read
 
+class write_result(object):
+
+	def __init__(self):
+		pass
+
+	def result_to_excel(self):
+		pass
 
 def main():
 	case = create_case()
@@ -158,9 +192,10 @@ def main():
 
 if __name__ == "__main__":
 	main()
-	case = create_case()
-	case.case_info()
-	os.environ['PYTHONPATH'] = case.python_path
-	dict= {'case_result': '', 'case_calssify': 'Basic_Function', 'case_location': (4, 6), 'case_name': 'Basic_Function_\
+	#case = create_case()
+
+	#case.case_info()
+	#os.environ['PYTHONPATH'] = case.python_path
+	#dict= {'case_result': '', 'case_calssify': 'Basic_Function', 'case_location': (4, 6), 'case_name': 'Basic_Function_\
 	#  -o   _GenerateCapsule.py -o', 'case_id': 'TC-4', 'expected_result': 'GenerateCapsule: error: argument -o/--output: expected one argument', 'case_command': ' -o'}
 	#case.run_case(dict)
