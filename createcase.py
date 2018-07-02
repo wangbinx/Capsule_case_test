@@ -33,7 +33,8 @@ class config(object):
 		self.mould_file_path = parse.get('PATH','Mould_file_path').strip('"')
 		self.script_path = os.path.join(self.generatecapsule_path,self.script_name)
 		self.python_path = parse.get('PATH','PYTHON_PATH').strip('"')
-		self.report_file = parse.get('PATH','Report_file').strip('"')
+		self.report_file_path = parse.get('PATH','Report_file_path').strip('"')
+		self.report_file_name = parse.get('PATH','Report_file').strip('"')
 
 	def test(self):
 		pass
@@ -76,7 +77,7 @@ class create_case(config):
 	def read_excel(self):
 		info={}
 		try:
-			excel = xlrd.open_workbook(self.report_file)
+			excel = xlrd.open_workbook(os.path.join(self.report_file_path,self.report_file_name))
 			sheet = excel.sheet_by_name(self.case_sheet)
 		except Exception,e:
 			print "Open Excel file error:%s" %e
@@ -129,62 +130,78 @@ class create_case(config):
 			self.caseinfo[key].update(result)
 		return self.caseinfo
 
+	def info_only_in_file(self,case_dict,content):
+		if content == self.read_module_txt_file(os.path.join(self.mould_file_path, case_dict['expected_result'])):
+			case_dict['case_result'] = 'Pass'
+		else:
+			case_dict['case_result'] = 'Fail'
+		return case_dict
+
+	def info_only_msg(self,case_dict,content):
+		expcted_result = case_dict['expected_result']
+		if self._search_info(expcted_result,content):
+			case_dict['case_result'] = 'Pass'
+		else:
+			print "%s fail message not match expected_result" % case_dict['case_id']
+			case_dict['case_result'] = 'Fail'
+		return case_dict
+
+	def pass_and_info(self,case_dict,command_dict,OUT):
+		result = False
+		for key in command_dict.keys():
+			if key in ['--capflag', '--capoemflag', '--guid', '--hardware-instance', '--monotonic-count','--version', '--lsv', '--debug']:
+				if key == '--guid':
+					tmp = self._search_info(self.command_dict[key], OUT, command_dict[key].upper())
+				elif key == '--capflag':
+					tmp = self._search_info(self.command_dict[key], OUT)
+				else:
+					tmp = self._search_info(self.command_dict[key], OUT, '%08X' % eval(command_dict[key]))
+				result = tmp & True
+		if result == True:
+			case_dict['case_result'] = 'Pass'
+		else:
+			print "%s fail message: %s" % (case_dict['case_id'], OUT)
+			case_dict['case_result'] = 'Fail'
+		return case_dict
+
 	def run_case(self,case_dict):
 		if case_dict['expected_result'] not in ['', 'N/A']:
-			if '|' not in case_dict['expected_result']:
-				expcted_result = case_dict['expected_result']
+			if '&' not in case_dict['expected_result']:
 				command = case_dict['case_command']
-				msg = re.compile(r'%s'%expcted_result)
 				out,err = self.process(command)
+				OUT = out+err
 				if os.path.isfile(os.path.join(self.mould_file_path,case_dict['expected_result'])):
-					if out ==  self.read_module_txt_file(os.path.join(self.mould_file_path,case_dict['expected_result'])):
-						case_dict['case_result'] = 'Pass'
-	#					print case_dict['case_id']
-					else:
-						case_dict['case_result'] = 'Fail'
+					self.info_only_in_file(case_dict,OUT)
 				else:
-					if err:
-						if msg.search(err):
-							case_dict['case_result'] = 'Pass'
-	#		    			print case_dict['case_id']
+					self.info_only_msg(case_dict,OUT)
+			elif '&' in case_dict['expected_result']:
+				expcted_file,expcted_result = case_dict['expected_result'].split('&',1)
+				command, dict = self.parser_command(case_dict['case_command'])
+				if '-o' in dict.keys():
+					if os.path.exists(os.path.join(self.generatecapsule_path, dict['-o'])):
+						os.remove(dict['-o'])
+					out, err = self.process(command)
+					#if 'pydev debugger' in err:
+					if err.strip() == '':
+						info_out,info_err = self.process('%s --dump-info'%dict['-o'])
+						#if 'pydev debugger' in info_err:
+						if info_err.strip() == '':
+							OUT = info_out.replace(' ','')
+							case_dict = self.pass_and_info(case_dict,dict,OUT)
 						else:
-							print "%s fail message not match expected_result"%case_dict['case_id']
-							case_dict['case_result'] = 'Fail'
-			else:
-				result = False
-				expcted_result = case_dict['expected_result'].split('|')[-1]
-				command, value = self.parser_command(case_dict['case_command'])
-				print case_dict['case_id']
-				if '-o' in value.keys():
-					if os.path.exists(os.path.join(self.generatecapsule_path,value['-o'])):
-						os.remove(value['-o'])
-					run_out, run_err = self.process(command)
-					if run_err:
-						OUT = run_err
-						result = False
+							print 'info_err:%s'%info_err
 					else:
-						info_out,info_err = self.process('%s --dump-info'%value['-o'])
-						OUT =(run_out+run_err+info_out+info_err).replace(' ','')
-						for v in value.keys():
-							if v in ['--capflag','--capoemflag','--guid','--hardware-instance','--monotonic-count','--version','--lsv','--debug']:
-								if v == '--guid':
-									tmp = self._search_info(self.command_dict[v], OUT, value[v].upper())
-								elif v == '--capflag':
-									tmp = self._search_info(self.command_dict[v], OUT)
-								else:
-									tmp = self._search_info(self.command_dict[v],OUT,'%08X'%eval(value[v]))
-								result = tmp & True
-					if result == True:
-						case_dict['case_result'] = 'Pass'
-					else:
-						print "%s fail message: %s" % (case_dict['case_id'],OUT)
-						case_dict['case_result'] = 'Fail'
+						print "%s fail message: %s" % (case_dict['case_id'], err.strip())
 		else:
 			pass
 		#	print "%s not have expected result" % (case_dict['case_id'])
 		return case_dict
 
 	def _search_info(self,name,content,value=None):
+		_ignore = ['[',']','(',')']
+		for i in name:
+			if i in _ignore:
+				name = name.replace(i,'\%s'%i)
 		if value == None:
 			reg = re.compile(r'%s'%name)
 			if reg.search(content):
@@ -228,12 +245,13 @@ class create_case(config):
 			return out,err
 		except Exception,e:
 			print e
+			sys.exit(1)
 
 class write_result(config):
 
 	def __init__(self):
 		super(write_result, self).__init__()
-		self.report = openpyxl.load_workbook(self.report_file)
+		self.report = openpyxl.load_workbook(os.path.join(self.report_file_path,self.report_file_name))
 		active = self.report.active
 		self.sheet = self.report[active.title]
 
@@ -261,7 +279,7 @@ class write_result(config):
 					self.sheet['%s%d' % (Rst_col, n)].font = self.color(self.sheet['%s%d' % (Rst_col, n)].value)
 
 	def save(self):
-		return self.report.save('test.xlsx')
+		return self.report.save(os.path.join(self.report_file_path,'test.xlsx'))
 
 def main():
 	case = create_case()
