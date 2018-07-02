@@ -1,7 +1,17 @@
 [PATH]
+
 GenerateCapsule_path = "C:\edk2-lab\cap\edk2\BaseTools\Source\Python\Capsule"
+
 Cert_file_path = "C:\edk2-lab\cap\edk2\BaseTools\Source\Python\Capsule"
+
 Signing_tool_path = "C:\Program Files (x86)\Windows Kits\8.1\bin\x64"
+
 Mould_file_path = "C:\edk2-lab\cap\edk2\BaseTools\Source\Python\Capsule\mould"
+
 Script_name = "GenerateCapsule.py"
+
 PYTHON_PATH = "C:\edk2-lab\cap\edk2\BaseTools\Source\Python"
+
+Report_file_path = "C:\code\Capsule_case_test"
+
+Report_file = "GenerateCapsule.xlsx"
