@@ -1,0 +1,14 @@
+usage: GenerateCapsule [-h] [-o OUTPUTFILE] (-e | -d | --dump-info)
+                       [--capflag {PersistAcrossReset,PopulateSystemTable,InitiateReset}]
+                       [--capoemflag CAPSULEOEMFLAG] [--guid GUID]
+                       [--hardware-instance HARDWAREINSTANCE]
+                       [--monotonic-count MONOTONICCOUNT]
+                       [--fw-version FWVERSION] [--lsv LOWESTSUPPORTEDVERSION]
+                       [--pfx-file SIGNTOOLPFXFILE]
+                       [--signer-private-cert OPENSSLSIGNERPRIVATECERTFILE]
+                       [--other-public-cert OPENSSLOTHERPUBLICCERTFILE]
+                       [--trusted-public-cert OPENSSLTRUSTEDPUBLICCERTFILE]
+                       [--signing-tool-path SIGNINGTOOLPATH] [--version] [-v]
+                       [-q] [--debug [0-9]]
+                       InputFile
+GenerateCapsule: error: all the following options are required for OpenSSL: --signer-private-cert, --other-public-cert, --trusted-public-cert

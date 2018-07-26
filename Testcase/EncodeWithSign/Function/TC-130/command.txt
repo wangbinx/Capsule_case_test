@@ -1,0 +1,1 @@
+test.txt -o xx.cap --guid ac29b86f-7a25-4096-8203-5c7aa5284ee6 --monotonic-count 0x1234 -e --pfx-file TestRoot.pfx --fw-version 0x22222222 --lsv 0X33333333

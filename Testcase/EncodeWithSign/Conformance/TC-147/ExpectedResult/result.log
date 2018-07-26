@@ -1,0 +1,14 @@
+usage: GenerateCapsule [-h] [-o OUTPUTFILE] (-e | -d | --dump-info)
+                       [--capflag {PersistAcrossReset,PopulateSystemTable,InitiateReset}]
+                       [--capoemflag CAPSULEOEMFLAG] [--guid GUID]
+                       [--hardware-instance HARDWAREINSTANCE]
+                       [--monotonic-count MONOTONICCOUNT]
+                       [--fw-version FWVERSION] [--lsv LOWESTSUPPORTEDVERSION]
+                       [--pfx-file SIGNTOOLPFXFILE]
+                       [--signer-private-cert OPENSSLSIGNERPRIVATECERTFILE]
+                       [--other-public-cert OPENSSLOTHERPUBLICCERTFILE]
+                       [--trusted-public-cert OPENSSLTRUSTEDPUBLICCERTFILE]
+                       [--signing-tool-path SIGNINGTOOLPATH] [--version] [-v]
+                       [-q] [--debug [0-9]]
+                       InputFile
+GenerateCapsule: error: argument --other-public-cert: can't open 'notexist.pem': [Errno 2] No such file or directory: 'notexist.pem'

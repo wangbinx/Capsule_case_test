@@ -1,0 +1,1 @@
+test.txt -o xx.cap -e --guid ac29b86f-7a25-4096-8203-5c7aa5284ee6 --lsv 0b111111 --fw-version 0xabcdef --signer-private-cert TestCert.pem --other-public-cert TestSub.pub.pem --trusted-public-cert TestRoot.pub.pem

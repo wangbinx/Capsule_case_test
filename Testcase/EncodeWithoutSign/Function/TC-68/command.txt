@@ -1,0 +1,1 @@
+test.txt -o xx.cap -e --capflag PersistAcrossReset --hardware-instance 0x3344 --guid ac29b86f-7a25-4096-8203-5c7aa5284ee6 -v

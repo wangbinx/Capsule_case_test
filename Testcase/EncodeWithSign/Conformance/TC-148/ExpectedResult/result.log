@@ -1,0 +1,23 @@
+Loading 'screen' into random state - done
+unable to load certificate
+1148:error:0906D06C:PEM routines:PEM_read_bio:no start line:.\crypto\pem\pem_lib.c:703:Expecting: TRUSTED CERTIFICATE
+
+GenerateCapsule: error: can not sign payload
+Traceback (most recent call last):
+  File "C:\Users\tiano\Desktop\WW29.3\edk2\BaseTools\Source\Python\Capsule\GenerateCapsule.py", line 384, in <module>
+    args.OpenSslTrustedPublicCertFile
+  File "C:\Users\tiano\Desktop\WW29.3\edk2\BaseTools\Source\Python\Capsule\GenerateCapsule.py", line 130, in SignPayloadOpenSsl
+    raise ValueError ('GenerateCapsule: error: openssl failed.')
+ValueError: GenerateCapsule: error: openssl failed.
+
+=====================================
+Loading 'screen' into random state - done
+unable to load certificates
+
+GenerateCapsule: error: can not sign payload
+Traceback (most recent call last):
+  File "C:\Users\tiano\Desktop\WW29.3\edk2\BaseTools\Source\Python\Capsule\GenerateCapsule.py", line 384, in <module>
+    args.OpenSslTrustedPublicCertFile
+  File "C:\Users\tiano\Desktop\WW29.3\edk2\BaseTools\Source\Python\Capsule\GenerateCapsule.py", line 130, in SignPayloadOpenSsl
+    raise ValueError ('GenerateCapsule: error: openssl failed.')
+ValueError: GenerateCapsule: error: openssl failed.

@@ -1,0 +1,4 @@
+Verification failure
+1200:error:21075075:PKCS7 routines:PKCS7_verify:certificate verify error:.\crypto\pkcs7\pk7_smime.c:342:Verify error:unsupported certificate purpose
+
+GenerateCapsule: warning: can not verify payload.

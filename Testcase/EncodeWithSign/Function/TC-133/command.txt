@@ -1,0 +1,1 @@
+test.txt -o xx.cap --guid ac29b86f-7a25-4096-8203-5c7aa5284ee6 --pfx-file TestRoot.pfx --signing-tool-path "C:\Program Files (x86)\Windows Kits\8.1\bin\x64" --encode --capflag PersistAcrossReset --lsv 0x123 --fw-version 0x345

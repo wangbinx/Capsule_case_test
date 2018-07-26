@@ -1,0 +1,5 @@
+GenerateCapsule: error: can not sign payload
+Traceback (most recent call last):
+  File "C:\Users\tiano\Desktop\CapsuleTool\edk2\BaseTools\Source\Python\Capsule\GenerateCapsule.py", line 372, in <module>
+    Result + struct.pack ('<Q', args.MonotonicCount),
+struct.error: integer out of range for 'Q' format code
