@@ -77,7 +77,7 @@ class Parse_command(object):
 		return Flag
 
 
-	def run_mode(self):
+	def mode(self):
 		for i in self.Command_List:
 			if i in self.mode:
 				return i
@@ -92,10 +92,15 @@ class Parse_command(object):
 		capflag = self.capflag()
 		if capflag:
 			Value['--capflag'] = capflag
-		run_mode = self.run_mode()
+		run_mode = self.mode()
 		if run_mode:
 			Value['mode'] = run_mode
 		return Value
+
+	def output(self):
+		if "-o" in self.Command_List:
+			return self.value_dict()["-o"]
+		return
 
 	def command_str(self):
 		return self._read()
@@ -111,8 +116,10 @@ class Run(Parse_command):
 		self.script = "GenerateCapsule.py"
 		self.ExpectedResult = os.path.join(self.casepath, "ExpectedResult")
 		self.resultpath = os.path.join(self.casepath, "TestResult")
-		self.output = ''
 		self.case = casepath.split("\\")[-1]
+
+	def encode(self):
+		pass
 
 	def process(self):
 		print("Running case:%s"%self.case)
@@ -151,7 +158,7 @@ class Run(Parse_command):
 				print(err)
 		#Compare file to Get result
 		testresult = self.Result(self.case)
-		result_dict[self.case] = testresult
+	#	result_dict[self.case] = testresult
 
 	# Copy InputFile to root dir
 	def MoveInputFile(self,Path,Flag):
@@ -162,7 +169,6 @@ class Run(Parse_command):
 					files.append(file)
 					shutil.copy(os.path.join(root,file),self.root)
 		return files
-
 
 	#Read Command File to get OutputFile name
 	def GetOutputFileName(self,CFile):
@@ -320,6 +326,7 @@ def main(Path):
 	options = parser.parse_args()
 	if options.case:
 		r = Run(CaseDict[options.case])
+		r.process()
 	else:
 		CaseFolder= ["Basic","Decode","Dumpinfo","Encode"]
 		global result_dict
