@@ -7,17 +7,18 @@ import openpyxl.styles as styles
 import argparse
 
 
-LOGMSG = []
+#LOGMSG = []
 result_dict = {}
+Logtest = {}
 
 class Parse_command(object):
 
 	def __init__(self, File):
 		self.file = File
 		self.Command_List = self._InQuote()
-		self.value_command = ['-o', '--capoemflag', '--guid', '--hardware-instance', '--monotonic-count',
+		self.value_command = ['-o','--output', '--capoemflag', '--guid', '--hardware-instance', '--monotonic-count',
 		                      '--fw-version', '--lsv', '--signing-tool-path', '--debug']
-		self.mode = ['-e','--encode', '-d','--decode', '--dump-info']
+		self.mode_command = ['-e','--encode', '-d','--decode', '--dump-info']
 		self.others_command = ['-h','--help', '-v','--verbose', '-q','--quiet', '--version']
 		self.cert_command = ['--pfx-file', '--signer-private-cert', '--other-public-cert', '--trusted-public-cert']
 		self.capflag_command = ['--capflag']
@@ -60,13 +61,13 @@ class Parse_command(object):
 		return List
 
 	#Parse input file
-	def input(self):
+	def _input(self):
 		tmp = copy.copy(self.Command_List)
 		for i in range(len(tmp)-1, -1, -1):
 			if tmp[i] in self.value_command + self.cert_command + self.capflag_command:
 				tmp.pop(-1)
 				tmp.pop(i)
-			elif tmp[i] in self.mode + self.others_command:
+			elif tmp[i] in self.mode_command + self.others_command:
 				tmp.pop(i)
 		input = tmp[0]
 		return input
@@ -83,16 +84,19 @@ class Parse_command(object):
 
 	def mode(self):
 		for i in self.Command_List:
-			if i in self.mode:
+			if i in self.mode_command:
 				return i
-		print("No run mode")
 		return
 
 	def value_dict(self):
 		Value = {}
 		for i in self.Command_List:
 			if i in self.value_command + self.cert_command:
-				Value[i] = self.Command_List[self.Command_List.index(i) + 1]
+				if self.Command_List.index(i) + 1 < len(self.Command_List):
+					if self.Command_List[self.Command_List.index(i) + 1] not in self.value_command + self.cert_command + self.capflag_command+self.mode_command + self.others_command:
+						Value[i] = self.Command_List[self.Command_List.index(i) + 1]
+				else:
+					Value[i] =""
 		capflag = self.capflag()
 		if capflag:
 			Value['--capflag'] = capflag
@@ -102,8 +106,10 @@ class Parse_command(object):
 		return Value
 
 	def output(self):
-		if "-o" in self.Command_List:
+		if "-o" in self.value_dict().keys():
 			return self.value_dict()["-o"]
+		elif "--output" in self.value_dict().keys():
+			return self.value_dict()["--output"]
 		return
 
 	def command_str(self):
@@ -135,9 +141,9 @@ class Run(Parse_command):
 		files = self.MoveInputFile(self.casepath,InputFlag)
 
 		#mode = self.capflag()
-		self.output,command = self.GetOutputFileName(self.CFile)
+		#self.output,command = self.GetOutputFileName(self.CFile)
 		#Run Script, Create run log
-		run = subprocess.Popen('python %s %s' % (self.script,command),stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		run = subprocess.Popen('python %s %s' % (self.script,self.command_str()),stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		out = run.stdout.read()
 		err = run.stderr.read()
 		if out !=b"" and out !="":
@@ -151,16 +157,17 @@ class Run(Parse_command):
 			shutil.rmtree(self.resultpath)
 		os.makedirs(self.resultpath)
 		shutil.move("result.log",self.resultpath)
-		if os.path.exists(self.output):
-			shutil.move(self.output,self.resultpath)
+		output = self.output()
+		if self.output() and os.path.exists(self.output()):
+			shutil.move(self.output(),self.resultpath)
+		#Compare file to Get result
+		testresult = self.Result(self.case)
+		result_dict[self.reportcaseid] = testresult
 		if InputFlag:
 			try:
 				self._removeinput(files)
 			except Exception as err:
 				print(err)
-		#Compare file to Get result
-		testresult = self.Result(self.case)
-		result_dict[self.reportcaseid] = testresult
 
 	# Copy InputFile to root dir
 	def MoveInputFile(self,Path,Flag):
@@ -207,31 +214,37 @@ class Run(Parse_command):
 			print(err)
 
 	def Result(self,caseid):
+		LOG = ""
 	#	caseid = caseid.replace("TC","Case")
 		FileResult = True
 		LogName ='result.log'
 		exlog =os.path.join(self.ExpectedResult,LogName)
 		testlog = os.path.join(self.resultpath,LogName)
 		LogResult = self.comparelog(exlog,testlog)
-		if self.output != '':
-			exfile = os.path.join(self.ExpectedResult,self.output)
-			testfile = os.path.join(self.resultpath,self.output)
+		output = self.output()
+		if self.output() != None:
+			exfile = os.path.join(self.ExpectedResult,self.output())
+			testfile = os.path.join(self.resultpath,self.output())
 			if os.path.exists(exfile):
 				if os.path.exists(testfile) and os.stat(testfile).st_size != 0:
-					if self.mode == "-e" or self.mode == "--encode":
+					if self.mode() == "-e" or self.mode() == "--encode":
 						FileResult =self._comparebin(exfile,testfile)
-					elif self.mode == "-d" or self.mode == "--decode":
+					elif self.mode() == "-d" or self.mode() == "--decode":
 						FileResult =self._comparedecodeoutput(exfile,testfile)
 				else:
 					FileResult = False
-				print("%s File Compare result:%s"%(caseid,FileResult)),
-				LOGMSG.append("%s File Compare result:%s; "%(caseid,FileResult))
-		print("%s Log Compare result:%s" % (caseid,LogResult)),
-		LOGMSG.append("%s Log Compare result:%s; " % (caseid,LogResult))
+				print("%s File Compare result:%s,"%(caseid,self._convert(FileResult))),
+				LOG += "%s File Compare result:%s; "%(caseid,self._convert(FileResult))
+	#			LOGMSG.append("%s File Compare result:%s; "%(caseid,FileResult))
+		print("%s Log Compare result:%s," % (caseid,self._convert(LogResult))),
+		LOG += "%s Log Compare result:%s; " % (caseid, self._convert(LogResult))
+	#	LOGMSG.append("%s Log Compare result:%s; " % (caseid,LogResult))
 		result =self._convert(LogResult&FileResult)
 		self.write_result_to_File(caseid,result,self.resultpath)
 		print("Test result is:%s"%(result))
-		LOGMSG.append("%s Test result is:%s\n\n"%(caseid,result))
+		LOG += "%s Test result is:%s\n\n" % (caseid, result)
+	#	LOGMSG.append("%s Test result is:%s\n\n"%(caseid,result))
+		Logtest[int(caseid.split("-")[1])] = LOG
 		return result
 
 	def _convert(self,result):
@@ -277,15 +290,16 @@ class Run(Parse_command):
 		with open(file, 'rb') as f:
 			all = f.read()
 		header = all[:0x5f]
-		payloadsize = self._payloadsize(self.input())
+		payloadsize = self._payloadsize(inputfile)
 		fpm = all[-(0x10+payloadsize):-payloadsize]
 		return header, fpm
 
 	#Copmare Bin file and return result
 	def _comparebin(self,file1,file2):
+		#inputfile = os.path.join(self.casepath,"InputFile",self._input())
 		result = False
-		f1f, f1l = self._readbin(file1,input)
-		f2f, f2l = self._readbin(file2,input)
+		f1f, f1l = self._readbin(file1,self._input())
+		f2f, f2l = self._readbin(file2,self._input())
 		if f1f == f2f:
 			if f1l == f2l:
 				result = True
@@ -299,6 +313,11 @@ class Excel(object):
 		self.report = openpyxl.load_workbook(reportfile)
 		active = self.report.active
 		self.sheet = self.report[active.title]
+		border = styles.Border(left=styles.Side(style='medium', color='FF000000'), right=styles.Side(style='medium', color='FF000000'),
+		       top=styles.Side(style='medium', color='FF000000'), bottom=styles.Side(style='medium', color='FF000000'),
+		       diagonal=styles.Side(style='medium', color='FF000000'), diagonal_direction=0,
+		       outline=styles.Side(style='medium', color='FF000000'), vertical=styles.Side(style='medium', color='FF000000'),
+		       horizontal=styles.Side(style='medium', color='FF000000'))
 
 	def write_to_excel(self,Dict):
 		ID_col = "E"
@@ -313,8 +332,14 @@ class Excel(object):
 				if self.sheet['%s%d'%(ID_col,n)].value in Dict.keys():
 					self.sheet['%s%d' % (Rst_col, n)].value = Dict[self.sheet['%s%d'%(ID_col,n)].value]
 					self.sheet['%s%d' % (Rst_col, n)].font = self.color(self.sheet['%s%d' % (Rst_col, n)].value)
+		self.addborder()
+
+	def addborder(self):
+		for n in self.sheet:
+			print(n)
 
 	def save(self):
+		print("Save result to test.xlsx")
 		return self.report.save(os.path.join(os.getcwd(),'test.xlsx'))
 
 	def color(self,value):
@@ -343,8 +368,8 @@ def main(Path):
 		r = Run(CaseDict[options.case])
 		r.process()
 	else:
-		CaseFolder= ["Basic","Decode","Dumpinfo","EncodeWithoutSign","EncodeWithSign"]
-		#CaseFolder = ["Basic"]
+		#CaseFolder= ["Basic","Decode","Dumpinfo","EncodeWithoutSign","EncodeWithSign"]
+		CaseFolder = ["Basic"]
 		for root, dirs, File in os.walk(Path, topdown=True, followlinks=False):
 			for dir in dirs:
 				if "TC-" in dir:
@@ -352,13 +377,14 @@ def main(Path):
 						casepath = os.path.join(root,dir)
 						r = Run(casepath)
 						r.process()
-	E = Excel("report.xlsx")
-	E.write_to_excel(result_dict)
-	E.save()
-	if LOGMSG:
-		with open("log.log",'w+')as log:
-			for i in LOGMSG:
-				log.write(i)
+		E = Excel("report.xlsx")
+		E.write_to_excel(result_dict)
+		E.save()
+	with open("log.txt", 'w+') as log:
+		aa = list(Logtest.keys())
+		aa.sort()
+		for key in aa:
+			log.write(Logtest[key])
 
 if __name__ == "__main__":
 	main(os.path.join(os.getcwd(),'Testcase'))

@@ -11,4 +11,4 @@ usage: GenerateCapsule [-h] [-o OUTPUTFILE] (-e | -d | --dump-info)
                        [--signing-tool-path SIGNINGTOOLPATH] [--version] [-v]
                        [-q] [--debug [0-9]]
                        InputFile
-GenerateCapsule: error: the following arguments are required: InputFile
+GenerateCapsule: error: too few arguments
