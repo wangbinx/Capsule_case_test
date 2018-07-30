@@ -121,6 +121,7 @@ class Run(Parse_command):
 		self.ExpectedResult = os.path.join(self.casepath, "ExpectedResult")
 		self.resultpath = os.path.join(self.casepath, "TestResult")
 		self.case = casepath.split("\\")[-1]
+		self.reportcaseid = self.case.replace("TC","Case")
 
 	def process(self):
 		print("Running case:%s"%self.case)
@@ -159,7 +160,7 @@ class Run(Parse_command):
 				print(err)
 		#Compare file to Get result
 		testresult = self.Result(self.case)
-		result_dict[self.case] = testresult
+		result_dict[self.reportcaseid] = testresult
 
 	# Copy InputFile to root dir
 	def MoveInputFile(self,Path,Flag):
@@ -206,6 +207,7 @@ class Run(Parse_command):
 			print(err)
 
 	def Result(self,caseid):
+	#	caseid = caseid.replace("TC","Case")
 		FileResult = True
 		LogName ='result.log'
 		exlog =os.path.join(self.ExpectedResult,LogName)
@@ -307,12 +309,10 @@ class Excel(object):
 			elif title.value == 'Result':
 				Rst_col = title.column
 		for n in range(2,self.sheet.max_row+1):
-			aa = self.sheet['%s%d'%(ID_col,n)].value
 			if self.sheet['%s%d'%(ID_col,n)].value:
 				if self.sheet['%s%d'%(ID_col,n)].value in Dict.keys():
 					self.sheet['%s%d' % (Rst_col, n)].value = Dict[self.sheet['%s%d'%(ID_col,n)].value]
 					self.sheet['%s%d' % (Rst_col, n)].font = self.color(self.sheet['%s%d' % (Rst_col, n)].value)
-					bb = self.sheet['%s%d' % (Rst_col, n)].value
 
 	def save(self):
 		return self.report.save(os.path.join(os.getcwd(),'test.xlsx'))
