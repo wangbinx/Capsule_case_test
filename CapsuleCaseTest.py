@@ -8,7 +8,7 @@ import argparse
 
 
 LOGMSG = []
-
+result_dict = {}
 
 class Parse_command(object):
 
@@ -23,17 +23,21 @@ class Parse_command(object):
 		self.capflag_command = ['--capflag']
 
 	def _read(self):
-		with open(self.file,'r') as F:
-			lines =F.readlines()
-		if lines:
-			if len(lines) > 1:
-				command = ''.join(lines)
+		try:
+			with open(self.file,'r') as F:
+				lines =F.readlines()
+			if lines:
+				if len(lines) > 1:
+					command = ''.join(lines)
+				else:
+					command = lines[0]
 			else:
-				command = lines[0]
-		else:
-			print("No command in CommandFile")
-			command = ''
-		return command
+				print("No command in CommandFile")
+				command = ''
+			return command
+		except Exception as err:
+			print("Not Command.txt found")
+			print(err)
 
 	#Parse command with quote
 	def _InQuote(self):
@@ -118,9 +122,6 @@ class Run(Parse_command):
 		self.resultpath = os.path.join(self.casepath, "TestResult")
 		self.case = casepath.split("\\")[-1]
 
-	def encode(self):
-		pass
-
 	def process(self):
 		print("Running case:%s"%self.case)
 		InputFlag = False
@@ -158,7 +159,7 @@ class Run(Parse_command):
 				print(err)
 		#Compare file to Get result
 		testresult = self.Result(self.case)
-	#	result_dict[self.case] = testresult
+		result_dict[self.case] = testresult
 
 	# Copy InputFile to root dir
 	def MoveInputFile(self,Path,Flag):
@@ -215,7 +216,10 @@ class Run(Parse_command):
 			testfile = os.path.join(self.resultpath,self.output)
 			if os.path.exists(exfile):
 				if os.path.exists(testfile) and os.stat(testfile).st_size != 0:
-					FileResult =self._comparebin(exfile,testfile)
+					if self.mode == "-e" or self.mode == "--encode":
+						FileResult =self._comparebin(exfile,testfile)
+					elif self.mode == "-d" or self.mode == "--decode":
+						FileResult =self._comparedecodeoutput(exfile,testfile)
 				else:
 					FileResult = False
 				print("%s File Compare result:%s"%(caseid,FileResult)),
@@ -237,6 +241,15 @@ class Run(Parse_command):
 	def write_result_to_File(self,id,result,path):
 		with open(os.path.join(path,"%s,%s"%(id,result)),'w+') as R:
 			R.write("%s test result is %s"%(id,result))
+
+	def _comparedecodeoutput(self,file1,file2):
+		with open(file1,'r')as f1:
+			read1 = f1.read()
+		with open(file2,'r')as f2:
+			read2 = f2.read()
+		if read1 == read2:
+			return True
+		return False
 
 	#Compare result.log
 	def comparelog(self,ori,test):
@@ -294,10 +307,12 @@ class Excel(object):
 			elif title.value == 'Result':
 				Rst_col = title.column
 		for n in range(2,self.sheet.max_row+1):
+			aa = self.sheet['%s%d'%(ID_col,n)].value
 			if self.sheet['%s%d'%(ID_col,n)].value:
 				if self.sheet['%s%d'%(ID_col,n)].value in Dict.keys():
 					self.sheet['%s%d' % (Rst_col, n)].value = Dict[self.sheet['%s%d'%(ID_col,n)].value]
 					self.sheet['%s%d' % (Rst_col, n)].font = self.color(self.sheet['%s%d' % (Rst_col, n)].value)
+					bb = self.sheet['%s%d' % (Rst_col, n)].value
 
 	def save(self):
 		return self.report.save(os.path.join(os.getcwd(),'test.xlsx'))
@@ -328,10 +343,8 @@ def main(Path):
 		r = Run(CaseDict[options.case])
 		r.process()
 	else:
-		CaseFolder= ["Basic","Decode","Dumpinfo","Encode"]
-		global result_dict
-		result_dict = {}
-		#CaseFolder = ["Encode"]
+		CaseFolder= ["Basic","Decode","Dumpinfo","EncodeWithoutSign","EncodeWithSign"]
+		#CaseFolder = ["Basic"]
 		for root, dirs, File in os.walk(Path, topdown=True, followlinks=False):
 			for dir in dirs:
 				if "TC-" in dir:
@@ -339,6 +352,9 @@ def main(Path):
 						casepath = os.path.join(root,dir)
 						r = Run(casepath)
 						r.process()
+	E = Excel("report.xlsx")
+	E.write_to_excel(result_dict)
+	E.save()
 	if LOGMSG:
 		with open("log.log",'w+')as log:
 			for i in LOGMSG:
