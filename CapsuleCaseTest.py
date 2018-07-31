@@ -309,17 +309,18 @@ class Run(Parse_command):
 
 class Excel(object):
 
-	def __init__(self,reportfile):
+	def __init__(self,reportfile,Dict):
 		self.report = openpyxl.load_workbook(reportfile)
+		self.Result_Dict = Dict
 		active = self.report.active
 		self.sheet = self.report[active.title]
-		border = styles.Border(left=styles.Side(style='medium', color='FF000000'), right=styles.Side(style='medium', color='FF000000'),
-		       top=styles.Side(style='medium', color='FF000000'), bottom=styles.Side(style='medium', color='FF000000'),
-		       diagonal=styles.Side(style='medium', color='FF000000'), diagonal_direction=0,
-		       outline=styles.Side(style='medium', color='FF000000'), vertical=styles.Side(style='medium', color='FF000000'),
-		       horizontal=styles.Side(style='medium', color='FF000000'))
+		self.border = styles.Border(left=styles.Side(style='thin', color='FF000000'), right=styles.Side(style='thin', color='FF000000'),
+		       top=styles.Side(style='thin', color='FF000000'), bottom=styles.Side(style='thin', color='FF000000'),
+		       diagonal=styles.Side(style='thin', color='FF000000'), diagonal_direction=0,
+		       outline=styles.Side(style='thin', color='FF000000'), vertical=styles.Side(style='thin', color='FF000000'),
+		       horizontal=styles.Side(style='thin', color='FF000000'))
 
-	def write_to_excel(self,Dict):
+	def write_to_excel(self):
 		ID_col = "E"
 		Rst_col = "F"
 		for title in self.sheet[1]:
@@ -329,16 +330,19 @@ class Excel(object):
 				Rst_col = title.column
 		for n in range(2,self.sheet.max_row+1):
 			if self.sheet['%s%d'%(ID_col,n)].value:
-				if self.sheet['%s%d'%(ID_col,n)].value in Dict.keys():
-					self.sheet['%s%d' % (Rst_col, n)].value = Dict[self.sheet['%s%d'%(ID_col,n)].value]
+				if self.sheet['%s%d'%(ID_col,n)].value in self.Result_Dict.keys():
+					self.sheet['%s%d' % (Rst_col, n)].value = self.Result_Dict[self.sheet['%s%d'%(ID_col,n)].value]
 					self.sheet['%s%d' % (Rst_col, n)].font = self.color(self.sheet['%s%d' % (Rst_col, n)].value)
-		self.addborder()
 
 	def addborder(self):
-		for n in self.sheet:
-			print(n)
+		for n in range(1,self.sheet.max_row+1):
+			for m in range(1,self.sheet.max_column+1):
+				self.sheet.cell(row=n,column=m).border = self.border
+		print("Fix excel border finish")
 
 	def save(self):
+		self.write_to_excel()
+		self.addborder()
 		print("Save result to test.xlsx")
 		return self.report.save(os.path.join(os.getcwd(),'test.xlsx'))
 
@@ -362,24 +366,31 @@ def FindCasePath(Path):
 def main(Path):
 	CaseDict = FindCasePath(Path)
 	parser = argparse.ArgumentParser()
-	parser.add_argument('-c', '--case', metavar="", dest='case', help="Input DEC file path.")
+	parser.add_argument('-id', '--caseid', metavar="", dest='caseid', help="Input case ID.")
+	parser.add_argument('-f', '--folder', metavar="", dest='folder', help="Input folder name(e.g. Testcase\Basic).")
+	#parser.add_argument('-c', '--classify', metavar="", dest='classify', help="Input case classify(e.g. Basic/Encode).")
 	options = parser.parse_args()
-	if options.case:
-		r = Run(CaseDict[options.case])
+	if options.caseid:
+		r = Run(CaseDict[options.caseid])
 		r.process()
+	elif options.folder:
+		for root, dirs, File in os.walk(options.folder, topdown=True, followlinks=False):
+			for dir in dirs:
+				if "TC-" in dir:
+					casepath = os.path.join(root,dir)
+					r = Run(casepath)
+					r.process()
+		Excel("report.xlsx",result_dict).save()
 	else:
-		#CaseFolder= ["Basic","Decode","Dumpinfo","EncodeWithoutSign","EncodeWithSign"]
-		CaseFolder = ["Basic"]
+		CaseFolder= ["Basic","Decode","Dumpinfo","EncodeWithoutSign","EncodeWithSign"]
+		#CaseFolder = ["Basic"]
 		for root, dirs, File in os.walk(Path, topdown=True, followlinks=False):
 			for dir in dirs:
 				if "TC-" in dir:
-					if (root.split("\\")[-1] in ["Conformance","Function"]) and (root.split("\\")[-2] in CaseFolder):
-						casepath = os.path.join(root,dir)
-						r = Run(casepath)
-						r.process()
-		E = Excel("report.xlsx")
-		E.write_to_excel(result_dict)
-		E.save()
+					casepath = os.path.join(root,dir)
+					r = Run(casepath)
+					r.process()
+		Excel("report.xlsx",result_dict).save()
 	with open("log.txt", 'w+') as log:
 		aa = list(Logtest.keys())
 		aa.sort()
