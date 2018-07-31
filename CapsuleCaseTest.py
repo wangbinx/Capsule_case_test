@@ -6,10 +6,8 @@ import openpyxl
 import openpyxl.styles as styles
 import argparse
 
-
-#LOGMSG = []
 result_dict = {}
-Logtest = {}
+LogMsg = {}
 
 class Parse_command(object):
 
@@ -128,6 +126,7 @@ class Run(Parse_command):
 		self.resultpath = os.path.join(self.casepath, "TestResult")
 		self.case = casepath.split("\\")[-1]
 		self.reportcaseid = self.case.replace("TC","Case")
+		self.LOG =''
 
 	def process(self):
 		print("Running case:%s"%self.case)
@@ -139,9 +138,6 @@ class Run(Parse_command):
 				if os.path.splitext(name)[-1].lower() == '.bat':
 					self._runbat(root,os.path.join(root,name))
 		files = self.MoveInputFile(self.casepath,InputFlag)
-
-		#mode = self.capflag()
-		#self.output,command = self.GetOutputFileName(self.CFile)
 		#Run Script, Create run log
 		run = subprocess.Popen('python %s %s' % (self.script,self.command_str()),stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		out = run.stdout.read()
@@ -157,7 +153,6 @@ class Run(Parse_command):
 			shutil.rmtree(self.resultpath)
 		os.makedirs(self.resultpath)
 		shutil.move("result.log",self.resultpath)
-		output = self.output()
 		if self.output() and os.path.exists(self.output()):
 			shutil.move(self.output(),self.resultpath)
 		#Compare file to Get result
@@ -208,20 +203,19 @@ class Run(Parse_command):
 		out = result.stdout.read()
 		err = result.stderr.read()
 		if err == '':
-			print(out)
+			print("%s %s"%(self.case,out))
+			self.LOG +="%s %s"%(self.case,out)
 			return True
 		else:
-			print(err)
+			print("%s%s"%(self.case,err))
+			self.LOG +="%s%s"%(self.case,err)
 
 	def Result(self,caseid):
-		LOG = ""
-	#	caseid = caseid.replace("TC","Case")
 		FileResult = True
 		LogName ='result.log'
 		exlog =os.path.join(self.ExpectedResult,LogName)
 		testlog = os.path.join(self.resultpath,LogName)
 		LogResult = self.comparelog(exlog,testlog)
-		output = self.output()
 		if self.output() != None:
 			exfile = os.path.join(self.ExpectedResult,self.output())
 			testfile = os.path.join(self.resultpath,self.output())
@@ -234,17 +228,14 @@ class Run(Parse_command):
 				else:
 					FileResult = False
 				print("%s File Compare result:%s,"%(caseid,self._convert(FileResult))),
-				LOG += "%s File Compare result:%s; "%(caseid,self._convert(FileResult))
-	#			LOGMSG.append("%s File Compare result:%s; "%(caseid,FileResult))
+				self.LOG += "%s File Compare result:%s; "%(caseid,self._convert(FileResult))
 		print("%s Log Compare result:%s," % (caseid,self._convert(LogResult))),
-		LOG += "%s Log Compare result:%s; " % (caseid, self._convert(LogResult))
-	#	LOGMSG.append("%s Log Compare result:%s; " % (caseid,LogResult))
+		self.LOG += "%s Log Compare result:%s; " % (caseid, self._convert(LogResult))
 		result =self._convert(LogResult&FileResult)
 		self.write_result_to_File(caseid,result,self.resultpath)
 		print("Test result is:%s"%(result))
-		LOG += "%s Test result is:%s\n\n" % (caseid, result)
-	#	LOGMSG.append("%s Test result is:%s\n\n"%(caseid,result))
-		Logtest[int(caseid.split("-")[1])] = LOG
+		self.LOG += "%s Test result is:%s\n\n" % (caseid, result)
+		LogMsg[int(caseid.split("-")[1])] = self.LOG
 		return result
 
 	def _convert(self,result):
@@ -382,8 +373,6 @@ def main(Path):
 					r.process()
 		Excel("report.xlsx",result_dict).save()
 	else:
-		CaseFolder= ["Basic","Decode","Dumpinfo","EncodeWithoutSign","EncodeWithSign"]
-		#CaseFolder = ["Basic"]
 		for root, dirs, File in os.walk(Path, topdown=True, followlinks=False):
 			for dir in dirs:
 				if "TC-" in dir:
@@ -392,10 +381,10 @@ def main(Path):
 					r.process()
 		Excel("report.xlsx",result_dict).save()
 	with open("log.txt", 'w+') as log:
-		aa = list(Logtest.keys())
+		aa = list(LogMsg.keys())
 		aa.sort()
 		for key in aa:
-			log.write(Logtest[key])
+			log.write(LogMsg[key])
 
 if __name__ == "__main__":
 	main(os.path.join(os.getcwd(),'Testcase'))
