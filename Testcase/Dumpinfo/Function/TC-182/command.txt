@@ -1,1 +1,1 @@
-xx.cap --dump-info --output 123.txt
+BIOSCAPSULEFMPPKCS7.Cap --dump-info 

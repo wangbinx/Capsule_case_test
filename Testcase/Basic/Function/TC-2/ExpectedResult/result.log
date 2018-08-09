@@ -1,5 +1,5 @@
 usage: GenerateCapsule [-h] [-o OUTPUTFILE] (-e | -d | --dump-info)
-                       [--capflag {PersistAcrossReset,PopulateSystemTable,InitiateReset}]
+                       [--capflag {PersistAcrossReset,InitiateReset}]
                        [--capoemflag CAPSULEOEMFLAG] [--guid GUID]
                        [--hardware-instance HARDWAREINSTANCE]
                        [--monotonic-count MONOTONICCOUNT]
@@ -25,9 +25,9 @@ optional arguments:
   -e, --encode          Encode file
   -d, --decode          Decode file
   --dump-info           Display FMP Payload Header information
-  --capflag {PersistAcrossReset,PopulateSystemTable,InitiateReset}
-                        Capsule flag can be PersistAcrossReset, or
-                        PopulateSystemTable or InitiateReset or not set
+  --capflag {PersistAcrossReset,InitiateReset}
+                        Capsule flag can be PersistAcrossReset or
+                        InitiateReset or not set
   --capoemflag CAPSULEOEMFLAG
                         Capsule OEM Flag is an integer between 0x0000 and
                         0xffff.
@@ -41,10 +41,12 @@ optional arguments:
                         0x0000000000000000.
   --fw-version FWVERSION
                         The 32-bit version of the binary payload (e.g.
-                        0x11223344 or 5678).
+                        0x11223344 or 5678). Required for encode operations
+                        that sign a payload.
   --lsv LOWESTSUPPORTEDVERSION
                         The 32-bit lowest supported version of the binary
-                        payload (e.g. 0x11223344 or 5678).
+                        payload (e.g. 0x11223344 or 5678). Required for encode
+                        operations that sign a payload.
   --pfx-file SIGNTOOLPFXFILE
                         signtool PFX certificate filename.
   --signer-private-cert OPENSSLSIGNERPRIVATECERTFILE

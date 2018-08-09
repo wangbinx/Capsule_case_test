@@ -1,1 +1,1 @@
-test.txt -o xx.cap --encode --guid ac29b86f-7a25-4096-8203-5c7aa5284ee6 --fw-version 0xff11 --lsv 0345 --pfx-file d:\TestRoot.pfx
+test.txt -o xx.cap --encode --guid ac29b86f-7a25-4096-8203-5c7aa5284ee6 --fw-version 0xff11 --lsv 0345 --pfx-file i:\TestRoot.pfx

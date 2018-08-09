@@ -1,1 +1,1 @@
-xx.cap -o test.txt -d --signer-private-cert Notexist.pem --other-public-cert TestSub.pub.pem --trusted-public-cert TestRoot.pub.pem
+xx.cap -o test.bin -d --signer-private-cert Notexist.pem --other-public-cert TestSub.pub.pem --trusted-public-cert TestRoot.pub.pem

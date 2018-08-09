@@ -1,1 +1,1 @@
-test.txt -o C:\Users\tiano\Desktop\CapsuleTool\edk2\BaseTools\Source\Python\Capsule\Testcase\EncodeWithoutSign\Function\TC-20\ExpectedResult\xx.cap -e --guid ac29b86f-7a25-4096-8203-5c7aa5284ee6 
+test.txt -o C:\xx.cap -e --guid ac29b86f-7a25-4096-8203-5c7aa5284ee6 

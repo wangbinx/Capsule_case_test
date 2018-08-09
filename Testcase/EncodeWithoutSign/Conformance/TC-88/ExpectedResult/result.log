@@ -1,5 +1,5 @@
 usage: GenerateCapsule [-h] [-o OUTPUTFILE] (-e | -d | --dump-info)
-                       [--capflag {PersistAcrossReset,PopulateSystemTable,InitiateReset}]
+                       [--capflag {PersistAcrossReset,InitiateReset}]
                        [--capoemflag CAPSULEOEMFLAG] [--guid GUID]
                        [--hardware-instance HARDWAREINSTANCE]
                        [--monotonic-count MONOTONICCOUNT]

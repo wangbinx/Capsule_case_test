@@ -1,1 +1,1 @@
-test.txt -o d:\xx.cap -e --guid ac29b86f-7a25-4096-8203-5c7aa5284ee6 
+test.txt -o i:\xx.cap -e --guid ac29b86f-7a25-4096-8203-5c7aa5284ee6 

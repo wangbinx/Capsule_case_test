@@ -1,5 +1,5 @@
 usage: GenerateCapsule [-h] [-o OUTPUTFILE] (-e | -d | --dump-info)
-                       [--capflag {PersistAcrossReset,PopulateSystemTable,InitiateReset}]
+                       [--capflag {PersistAcrossReset,InitiateReset}]
                        [--capoemflag CAPSULEOEMFLAG] [--guid GUID]
                        [--hardware-instance HARDWAREINSTANCE]
                        [--monotonic-count MONOTONICCOUNT]
@@ -11,4 +11,4 @@ usage: GenerateCapsule [-h] [-o OUTPUTFILE] (-e | -d | --dump-info)
                        [--signing-tool-path SIGNINGTOOLPATH] [--version] [-v]
                        [-q] [--debug [0-9]]
                        InputFile
-GenerateCapsule: error: argument --capflag: invalid choice: 'persistacrossreset' (choose from 'PersistAcrossReset', 'PopulateSystemTable', 'InitiateReset')
+GenerateCapsule: error: argument --capflag: invalid choice: 'persistacrossreset' (choose from 'PersistAcrossReset', 'InitiateReset')

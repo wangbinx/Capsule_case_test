@@ -1,1 +1,0 @@
-test.txt --output xx.cap --encode --guid ac29b86f-7a25-4096-8203-5c7aa5284ee6 --capflag PopulateSystemTable --capflag InitiateReset --capflag PersistAcrossReset 

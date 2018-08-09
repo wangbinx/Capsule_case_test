@@ -22,7 +22,13 @@ EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER.UpdateHardwareInstance = 0000000000
 sizeof (Payload)                                                    = 010B355D
 sizeof (VendorCodeBytes)                                            = 00000000
 --------
-No EFI_FIRMWARE_IMAGE_AUTHENTICATION
+EFI_FIRMWARE_IMAGE_AUTHENTICATION.MonotonicCount                = 0000000000000002
+EFI_FIRMWARE_IMAGE_AUTHENTICATION.AuthInfo.Hdr.dwLength         = 00000AED
+EFI_FIRMWARE_IMAGE_AUTHENTICATION.AuthInfo.Hdr.wRevision        = 0200
+EFI_FIRMWARE_IMAGE_AUTHENTICATION.AuthInfo.Hdr.wCertificateType = 0EF1
+EFI_FIRMWARE_IMAGE_AUTHENTICATION.AuthInfo.CertType             = 4AAFD29D-68DF-49EE-8AA9-347D375665A7
+sizeof (EFI_FIRMWARE_IMAGE_AUTHENTICATION.AuthInfo.CertData)    = 00000AD5
+sizeof (Payload)                                                = 010B2A68
 --------
 No FMP_PAYLOAD_HEADER
 ========

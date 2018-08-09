@@ -1,7 +1,1 @@
 GenerateCapsule: error: can not decode capsule
-Traceback (most recent call last):
-  File "C:\Users\tiano\Desktop\WW29.3\edk2\BaseTools\Source\Python\Capsule\GenerateCapsule.py", line 426, in <module>
-    Result = UefiCapsuleHeader.Decode (Buffer)
-  File "C:\Users\tiano\Desktop\WW29.3\edk2\BaseTools\Source\Python\Common\Uefi\Capsule\UefiCapsuleHeader.py", line 93, in Decode
-    raise ValueError
-ValueError

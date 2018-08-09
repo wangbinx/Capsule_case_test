@@ -3,8 +3,8 @@ EFI_CAPSULE_HEADER.CapsuleGuid      = 6DCBD5ED-E82D-4C44-BDA1-7194199AD92A
 EFI_CAPSULE_HEADER.HeaderSize       = 00000020
 EFI_CAPSULE_HEADER.Flags            = 00000000
   OEM Flags                         = 0000
-EFI_CAPSULE_HEADER.CapsuleImageSize = 00000B8D
-sizeof (Payload)                    = 00000B6D
+EFI_CAPSULE_HEADER.CapsuleImageSize = 00000A88
+sizeof (Payload)                    = 00000A68
 --------
 EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER.Version             = 00000001
 EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER.EmbeddedDriverCount = 00000000
@@ -14,23 +14,23 @@ EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER.ItemOffsetList      =
 EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER.Version                = 00000002
 EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER.UpdateImageTypeId      = AC29B86F-7A25-4096-8203-5C7AA5284EE6
 EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER.UpdateImageIndex       = 00000001
-EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER.UpdateImageSize        = 00000B35
+EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER.UpdateImageSize        = 00000A30
 EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER.UpdateVendorCodeSize   = 00000000
 EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER.UpdateHardwareInstance = 0000000000000000
-sizeof (Payload)                                                    = 00000B35
+sizeof (Payload)                                                    = 00000A30
 sizeof (VendorCodeBytes)                                            = 00000000
 --------
 EFI_FIRMWARE_IMAGE_AUTHENTICATION.MonotonicCount                = 0000000000000000
-EFI_FIRMWARE_IMAGE_AUTHENTICATION.AuthInfo.Hdr.dwLength         = 00000ADF
+EFI_FIRMWARE_IMAGE_AUTHENTICATION.AuthInfo.Hdr.dwLength         = 000009DA
 EFI_FIRMWARE_IMAGE_AUTHENTICATION.AuthInfo.Hdr.wRevision        = 0200
 EFI_FIRMWARE_IMAGE_AUTHENTICATION.AuthInfo.Hdr.wCertificateType = 0EF1
-EFI_FIRMWARE_IMAGE_AUTHENTICATION.AuthInfo.CertType             = 9DD2AF4A-DF68-EE49-8AA9-347D375665A7
-sizeof (EFI_FIRMWARE_IMAGE_AUTHENTICATION.AuthInfo.CertData)    = 00000AC7
+EFI_FIRMWARE_IMAGE_AUTHENTICATION.AuthInfo.CertType             = 4AAFD29D-68DF-49EE-8AA9-347D375665A7
+sizeof (EFI_FIRMWARE_IMAGE_AUTHENTICATION.AuthInfo.CertData)    = 000009C2
 sizeof (Payload)                                                = 0000004E
 --------
 FMP_PAYLOAD_HEADER.Signature              = 3153534D (MSS1)
 FMP_PAYLOAD_HEADER.HeaderSize             = 00000010
-FMP_PAYLOAD_HEADER.FwVersion              = 00000123
-FMP_PAYLOAD_HEADER.LowestSupportedVersion = 00000456
+FMP_PAYLOAD_HEADER.FwVersion              = 00000001
+FMP_PAYLOAD_HEADER.LowestSupportedVersion = ABCD1234
 sizeof (Payload)                          = 0000003E
 ========

@@ -1,1 +1,1 @@
-xx.cap -o test.txt -d --signer-private-cert TestCert.pem
+xx.cap -o test.bin -d --signer-private-cert TestCert.pem

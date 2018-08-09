@@ -1,1 +1,1 @@
-xx.cap -o test.txt -d --pfx-file TestRoot.pfx --signing-tool-path "C:\Program Files (x86)\Windows Kits\8.1\bin\"
+xx.cap -o test.bin -d --pfx-file TestRoot.pfx --signing-tool-path "C:\Program Files (x86)\Windows Kits\8.1\bin\"

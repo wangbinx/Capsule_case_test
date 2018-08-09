@@ -1,1 +1,0 @@
-xx.cap --dump-info --output 123.txt

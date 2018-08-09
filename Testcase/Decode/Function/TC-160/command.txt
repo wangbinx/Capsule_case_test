@@ -1,1 +1,1 @@
-xx.cap --output test.txt --decode --signer-private-cert TestCert.pem --other-public-cert TestSub.pub.pem --trusted-public-cert TestRoot.pub.pem 
+xx.cap --output test.bin --decode --signer-private-cert TestCert.pem --other-public-cert TestSub.pub.pem --trusted-public-cert TestRoot.pub.pem 

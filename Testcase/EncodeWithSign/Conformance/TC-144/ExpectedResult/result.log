@@ -2,9 +2,3 @@
 operable program or batch file.
 
 GenerateCapsule: error: can not sign payload
-Traceback (most recent call last):
-  File "C:\Users\tiano\Desktop\WW29.3\edk2\BaseTools\Source\Python\Capsule\GenerateCapsule.py", line 376, in <module>
-    args.SignToolPfxFile
-  File "C:\Users\tiano\Desktop\WW29.3\edk2\BaseTools\Source\Python\Capsule\GenerateCapsule.py", line 87, in SignPayloadSignTool
-    raise ValueError ('GenerateCapsule: error: signtool failed.')
-ValueError: GenerateCapsule: error: signtool failed.

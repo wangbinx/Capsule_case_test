@@ -1,1 +1,14 @@
-GenerateCapsule: error: can not encode FMP Capsule Header
+usage: GenerateCapsule [-h] [-o OUTPUTFILE] (-e | -d | --dump-info)
+                       [--capflag {PersistAcrossReset,InitiateReset}]
+                       [--capoemflag CAPSULEOEMFLAG] [--guid GUID]
+                       [--hardware-instance HARDWAREINSTANCE]
+                       [--monotonic-count MONOTONICCOUNT]
+                       [--fw-version FWVERSION] [--lsv LOWESTSUPPORTEDVERSION]
+                       [--pfx-file SIGNTOOLPFXFILE]
+                       [--signer-private-cert OPENSSLSIGNERPRIVATECERTFILE]
+                       [--other-public-cert OPENSSLOTHERPUBLICCERTFILE]
+                       [--trusted-public-cert OPENSSLTRUSTEDPUBLICCERTFILE]
+                       [--signing-tool-path SIGNINGTOOLPATH] [--version] [-v]
+                       [-q] [--debug [0-9]]
+                       InputFile
+GenerateCapsule: error: --hardware-instance must be an integer in range 0x0..0xffffffffffffffff

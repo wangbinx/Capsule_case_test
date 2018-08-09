@@ -1,1 +1,1 @@
-xx.cap -o test.txt --decode --pfx-file  TestRoot.pfx -q
+xx.cap -o test.bin --decode --signer-private-cert TestCert.pem --other-public-cert TestSub.pub.pem --trusted-public-cert TestRoot.pub.pem -q

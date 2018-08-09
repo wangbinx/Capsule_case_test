@@ -1,5 +1,14 @@
-GenerateCapsule: error: can not sign payload
-Traceback (most recent call last):
-  File "C:\Users\tiano\Desktop\CapsuleTool\edk2\BaseTools\Source\Python\Capsule\GenerateCapsule.py", line 372, in <module>
-    Result + struct.pack ('<Q', args.MonotonicCount),
-struct.error: integer out of range for 'Q' format code
+usage: GenerateCapsule [-h] [-o OUTPUTFILE] (-e | -d | --dump-info)
+                       [--capflag {PersistAcrossReset,InitiateReset}]
+                       [--capoemflag CAPSULEOEMFLAG] [--guid GUID]
+                       [--hardware-instance HARDWAREINSTANCE]
+                       [--monotonic-count MONOTONICCOUNT]
+                       [--fw-version FWVERSION] [--lsv LOWESTSUPPORTEDVERSION]
+                       [--pfx-file SIGNTOOLPFXFILE]
+                       [--signer-private-cert OPENSSLSIGNERPRIVATECERTFILE]
+                       [--other-public-cert OPENSSLOTHERPUBLICCERTFILE]
+                       [--trusted-public-cert OPENSSLTRUSTEDPUBLICCERTFILE]
+                       [--signing-tool-path SIGNINGTOOLPATH] [--version] [-v]
+                       [-q] [--debug [0-9]]
+                       InputFile
+GenerateCapsule: error: --monotonic-count must be an integer in range 0x0..0xffffffffffffffff
