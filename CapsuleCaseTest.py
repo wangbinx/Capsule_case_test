@@ -1,6 +1,7 @@
 import os
 import copy
 import shutil
+import platform
 import subprocess
 import openpyxl
 import openpyxl.styles as styles
@@ -116,8 +117,8 @@ class Parse_command(object):
 class Run(Parse_command):
 
 	def __init__(self,casepath):
-		self.CFileName = 'command.txt'
 		self.casepath = casepath
+		self.CFileName = self.CommandFileName()
 		self.CFile = os.path.join(self.casepath, self.CFileName)
 		super(Run, self).__init__(self.CFile)
 		self.root = os.getcwd()
@@ -127,6 +128,21 @@ class Run(Parse_command):
 		self.case = os.path.basename(casepath)
 		self.reportcaseid = self.case.replace("TC","Case")
 		self.LOG =''
+		self.resultlog=self.Resultlogname()
+
+	def CommandFileName(self):
+		if platform.system() == 'Linux' and os.path.exists(os.path.join(self.casepath, "linux.txt")):
+			FileName = "linux.txt"
+		else:
+			FileName = "command.txt"
+		return FileName
+
+	def Resultlogname(self):
+		if platform.system() == 'Linux' and os.path.exists(os.path.join(self.ExpectedResult,"linux.log")):
+			resultlogname = "linux.log"
+		else:
+			resultlogname = "result.log"
+		return resultlogname
 
 	def process(self):
 		print("Running case:%s"%self.case)
@@ -143,16 +159,16 @@ class Run(Parse_command):
 		out = run.stdout.read()
 		err = run.stderr.read()
 		if out !=b"" and out !="":
-			self.write2log("result.log",out)
+			self.write2log(self.resultlog,out)
 		elif err != "" and err != b"":
-			self.write2log("result.log", err)
+			self.write2log(self.resultlog, err)
 		else:
-			self.write2log("result.log",out+err)
+			self.write2log(self.resultlog,out+err)
 		#Replace result file and clean root dir
 		if os.path.exists(self.resultpath):
 			shutil.rmtree(self.resultpath)
 		os.makedirs(self.resultpath)
-		shutil.move("result.log",self.resultpath)
+		shutil.move(self.resultlog,self.resultpath)
 		if self.output() and os.path.exists(self.output()):
 			shutil.move(self.output(),self.resultpath)
 		#Compare file to Get result
@@ -212,9 +228,9 @@ class Run(Parse_command):
 
 	def Result(self,caseid):
 		FileResult = True
-		LogName ='result.log'
-		exlog =os.path.join(self.ExpectedResult,LogName)
-		testlog = os.path.join(self.resultpath,LogName)
+		#LogName ='result.log'
+		exlog =os.path.join(self.ExpectedResult,self.resultlog)
+		testlog = os.path.join(self.resultpath,self.resultlog)
 		LogResult = self.comparelog(exlog,testlog)
 		if self.output() != None:
 			exfile = os.path.join(self.ExpectedResult,self.output())
