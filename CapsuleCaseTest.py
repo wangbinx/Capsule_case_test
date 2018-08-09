@@ -124,7 +124,7 @@ class Run(Parse_command):
 		self.script = "GenerateCapsule.py"
 		self.ExpectedResult = os.path.join(self.casepath, "ExpectedResult")
 		self.resultpath = os.path.join(self.casepath, "TestResult")
-		self.case = casepath.split("\\")[-1]
+		self.case = os.path.basename(casepath)
 		self.reportcaseid = self.case.replace("TC","Case")
 		self.LOG =''
 
@@ -139,7 +139,7 @@ class Run(Parse_command):
 					self._runbat(root,os.path.join(root,name))
 		files = self.MoveInputFile(self.casepath,InputFlag)
 		#Run Script, Create run log
-		run = subprocess.Popen('python %s %s' % (self.script,self.command_str()),stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		run = subprocess.Popen('python %s %s' % (self.script,self.command_str()),stdout=subprocess.PIPE, stderr=subprocess.PIPE,shell=True)
 		out = run.stdout.read()
 		err = run.stderr.read()
 		if out !=b"" and out !="":
@@ -387,4 +387,6 @@ def main(Path):
 			log.write(LogMsg[key])
 
 if __name__ == "__main__":
+	root = os.getcwd()
+	os.environ["PYTHONPATH"] = os.path.dirname(root)
 	main(os.path.join(os.getcwd(),'Testcase'))
