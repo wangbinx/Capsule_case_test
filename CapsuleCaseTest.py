@@ -1,4 +1,5 @@
 import os
+import sys
 import copy
 import shutil
 import platform
@@ -303,7 +304,6 @@ class Run(Parse_command):
 
 	#Copmare Bin file and return result
 	def _comparebin(self,file1,file2):
-		#inputfile = os.path.join(self.casepath,"InputFile",self._input())
 		result = False
 		f1f, f1l = self._readbin(file1,self._input())
 		f2f, f2l = self._readbin(file2,self._input())
@@ -312,6 +312,35 @@ class Run(Parse_command):
 				result = True
 		return result
 
+class All(Run):
+
+	def DecodeAllEncodeCase(self):
+		pass
+
+	def Decode_command(self):
+		command_str = ""
+		input = self._input()
+		output = self.output()
+		value_dict = self.value_dict()
+		if output:
+			command_str += output
+			command_str += " -d %s %s"%(tmp, input)
+		for key in list(value_dict.keys()):
+			if key in self.cert_command:
+				command_str += " %s %s"%(key,value_dict[key])
+		return command_str
+
+	def CopyCertFile(self):
+		files = []
+		for root, dirs, File in os.walk(os.path.join(self.casepath, "InputFile"), topdown=True, followlinks=False):
+			for file in File:
+				if file != self._input():
+					files.append(file)
+					shutil.copy(os.path.join(root, file), self.root)
+		return files
+
+	def CopyInputFile(self):
+		shutil.copy(os.path.join(self.casepath,folder,self.output()))
 
 
 class Excel(object):
@@ -378,23 +407,32 @@ def main(Path):
 	#parser.add_argument('-c', '--classify', metavar="", dest='classify', help="Input case classify(e.g. Basic/Encode).")
 	options = parser.parse_args()
 	if options.caseid:
-		r = Run(CaseDict[options.caseid])
-		r.process()
+		try:
+			r = Run(CaseDict[options.caseid])
+			r.process()
+		except Exception as err:
+			print(err)
 	elif options.folder:
 		for root, dirs, File in os.walk(options.folder, topdown=True, followlinks=False):
 			for dir in dirs:
 				if "TC-" in dir:
 					casepath = os.path.join(root,dir)
-					r = Run(casepath)
-					r.process()
+					try:
+						r = Run(casepath)
+						r.process()
+					except Exception as err:
+						print(err)
 		Excel("report.xlsx",result_dict).save()
 	else:
 		for root, dirs, File in os.walk(Path, topdown=True, followlinks=False):
 			for dir in dirs:
 				if "TC-" in dir:
 					casepath = os.path.join(root,dir)
-					r = Run(casepath)
-					r.process()
+					try:
+						r = Run(casepath)
+						r.process()
+					except Exception as err:
+						print(err)
 		Excel("report.xlsx",result_dict).save()
 	with open("log.txt", 'w+') as log:
 		aa = list(LogMsg.keys())
@@ -405,4 +443,7 @@ def main(Path):
 if __name__ == "__main__":
 	root = os.getcwd()
 	os.environ["PYTHONPATH"] = os.path.dirname(root)
-	main(os.path.join(os.getcwd(),'Testcase'))
+	#main(os.path.join(os.getcwd(),'Testcase'))
+	path = "C:\edk2-lab\edk2-staging\BaseTools\Source\Python\Capsule\Testcase\EncodeWithSign\Function\TC-46"
+	path1 = "C:\edk2-lab\edk2-staging\BaseTools\Source\Python\Capsule\Testcase\EncodeWithoutSign\Function\TC-6"
+	All(path).Decode_command()
