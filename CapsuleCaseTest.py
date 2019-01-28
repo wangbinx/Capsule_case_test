@@ -443,7 +443,7 @@ def main(Path):
 if __name__ == "__main__":
 	root = os.getcwd()
 	os.environ["PYTHONPATH"] = os.path.dirname(root)
-	#main(os.path.join(os.getcwd(),'Testcase'))
-	path = "C:\edk2-lab\edk2-staging\BaseTools\Source\Python\Capsule\Testcase\EncodeWithSign\Function\TC-46"
-	path1 = "C:\edk2-lab\edk2-staging\BaseTools\Source\Python\Capsule\Testcase\EncodeWithoutSign\Function\TC-6"
-	All(path).Decode_command()
+	main(os.path.join(os.getcwd(),'Testcase'))
+	#path = "C:\edk2-lab\edk2-staging\BaseTools\Source\Python\Capsule\Testcase\EncodeWithSign\Function\TC-46"
+	#path1 = "C:\edk2-lab\edk2-staging\BaseTools\Source\Python\Capsule\Testcase\EncodeWithoutSign\Function\TC-6"
+	#All(path).Decode_command()
